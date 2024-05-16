@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-    <p> <%= pageTitle; %></p>
-    <p> <%= dbData[0].fName; %></p>
+    <%- include ("partials/head") %>
 
+<body>
+
+    <%- include('partials/header') %>
+    <h1> <%= pageTitle; %> </h1>
+
+    <form  id="form" action="/" method="POST">
+        Table name: <input type="text" name="table_name">
+        <button type="submit">Get Table</button>
+    </form>
+    
+    <%- include('partials/dataTables') %>
+
+    <!-- <%- include('partials/footer') %> -->
 </body>
-</html>
