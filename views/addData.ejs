@@ -1,0 +1,22 @@
+<%- include ("partials/head") %>
+
+<body>
+    <div id="mainDiv">
+        <%- include('partials/header') %>
+        <h1> <%= pageTitle; %> </h1>
+    
+        <form  id="addData-form" action="/addData" method="POST">
+            Student name : <input type="text" name="student_name">
+            Student age: <input type="number" name="student_age">
+            Class id : <input type="number" name="class_id">
+    
+            <button type="submit">Insert row</button>
+        </form>
+    
+        <h3> Table name = <%= currentTable; %> </h3>
+        <%- include ("partials/dataTables") %>
+    </div>
+
+    <%- include('partials/footer') %>
+
+</body>

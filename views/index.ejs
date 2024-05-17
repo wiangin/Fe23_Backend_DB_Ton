@@ -1,16 +1,18 @@
     <%- include ("partials/head") %>
 
 <body>
-
-    <%- include('partials/header') %>
-    <h1> <%= pageTitle; %> </h1>
-
-    <form  id="form" action="/" method="POST">
-        Table name: <input type="text" name="table_name">
-        <button type="submit">Get Table</button>
-    </form>
+    <div id="mainDiv">
+        <%- include('partials/header') %>
+        <h1> <%= pageTitle; %> </h1>
+        
+        <form id="form" action="/" method="POST">
+            Table name: <input type="text" name="userInput" required>
+            <button type="submit">Get Table</button>
+        </form>
+        
+        <%- include('partials/dataTables') %>
     
-    <%- include('partials/dataTables') %>
+    </div>
 
-    <!-- <%- include('partials/footer') %> -->
+    <%- include('partials/footer') %>
 </body>
