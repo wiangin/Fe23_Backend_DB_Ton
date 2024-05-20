@@ -4,13 +4,18 @@
     <div id="mainDiv">
         <%- include('partials/header') %>
         <h1> <%= pageTitle; %> </h1>
-    
+
         <form  id="addData-form" action="/addData" method="POST">
-            Student name : <input type="text" name="student_name">
-            Student age: <input type="number" name="student_age">
-            Class id : <input type="number" name="class_id">
-    
-            <button type="submit">Insert row</button>
+        <% count = 0; %>
+
+        <% dbDataHeaders.forEach(key => { %>
+            <% if( count > 0){ %>
+                <label> <%= key[0]%> </label> <input type="text" name="<%= key[0]%>">
+            <% } %>
+            <% count++; %>
+        <%}) %>
+        
+        <button id="addRow-btn" type="submit">Add Row</button>
         </form>
     
         <h3> Table name = <%= currentTable; %> </h3>
@@ -20,3 +25,4 @@
     <%- include('partials/footer') %>
 
 </body>
+

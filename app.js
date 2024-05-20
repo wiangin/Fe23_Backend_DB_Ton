@@ -23,6 +23,9 @@ app.set('view engine', 'ejs');
 // Set up body parser middleware to parse URL-encoded form data
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//Convert body request to json
+app.use(bodyParser.json());
+
 ////////////////Routing
 
 //////// Reuest med endpoint * / * \\\\\\\\\\
@@ -35,6 +38,7 @@ app.get('/', async (req, res) => {
     const [dbData] = await db.query(sql);
     // console.log(dbData);
     res.render('index', {pageTitle, dbData});
+    // res.json(dbData);
 });
 
 let currentTable;  
@@ -51,7 +55,7 @@ app.post('/', async (req, res) => {
   const sql = `Select * FROM ${tableName.userInput} `;
   currentTable = tableName.userInput;
   const [dbData] = await db.query(sql);
-  console.log(dbData);
+  // console.log(dbData);
 
   const sql2 = `DESCRIBE ${tableName.userInput}`;
   const [dbDataHeaders] = await db.query(sql2);
@@ -119,17 +123,39 @@ app.get('/addData', async (req, res) => {
 app.post('/addData', async (req, res) => {
   //res.send("hello World");//serves index.html
   // console.log( typeof req.body.student_name);
-  const tableName = req.body; // with Post need request from body
-  const age = parseInt(tableName.student_age);
-  const classId = parseInt(tableName.class_id);
-
   const pageTitle = `Table name = ${currentTable}`; 
 
-  // Query to Mysql \\
+  const tableName = req.body; // with Post need request from body
+  console.log(tableName);
 
-  const insertQuery = `INSERT INTO ${currentTable}(student_name, student_age, class_id) VALUES ("${tableName.student_name}", ${age}, ${classId})`;
-  const addDbData = await db.query(insertQuery);
-  console.log(addDbData);
+  const objValues = Object.values(tableName);
+  console.log(objValues);
+
+  for(const data of objValues){
+    console.log(data);
+  }
+
+
+  // Query to Mysql \\
+  const stringColumn = ["student_name", "teacher_name","subject", "class_name","course_name"];
+  const columnNameArr = [];
+  const arr = [];
+  for(const key in tableName){
+    columnNameArr.push(key);
+    if(stringColumn.includes(key)){
+        arr.push(`"${tableName[key]}"`);
+    }
+    else{
+      arr.push(tableName[key]);
+    }
+  };
+
+  const columnNames = columnNameArr.join(",") //Put comma between values
+  console.log(columnNames);
+ 
+    const insertQuery = `INSERT INTO ${currentTable}(${columnNames}) VALUES (${arr.join(",")})`;
+    console.log(insertQuery);
+    const addDbData = await db.query(insertQuery);
 
   const sql = `SELECT * FROM ${currentTable}`;
   const [dbData] = await db.query(sql);
@@ -141,6 +167,34 @@ app.post('/addData', async (req, res) => {
    // TO render on webpage\\
   res.render('addData', {pageTitle, dbData, dbDataHeaders, currentTable});
 });
+
+
+//////Rest Api \\\\\\
+//////Rest Api \\\\\\
+//////Rest Api \\\\\\
+app.get('/students',async (req,res) => {
+  // console.log("DEBUG = ", req.query.name);
+
+let sql = 'SELECT * FROM `students`';
+const values = [];
+
+if (req.query.name){
+  sql += (values.length == 0 ? " WHERE" : " AND") + "  student_name LIKE ?";
+  values.push(`%${req.query.name}%`);
+}
+if (req.query.age) {
+  sql += (values.length == 0 ? " WHERE" : " AND") + "  student_age = ?";
+  values.push(req.query.age);
+}
+
+if (req.query.age_gt) {
+  sql += (values.length == 0 ? " WHERE" : " AND") + "  student_age > ?";
+  values.push(req.query.age_gt);
+}
+  const [dbData] = await db.query(sql, values);
+  // console.log(dbData);
+  res.json(dbData);
+})
 
 //server configuration
 const port = 3000;

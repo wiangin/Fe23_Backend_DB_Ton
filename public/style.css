@@ -65,3 +65,7 @@ body{
 .show{
     display: block;
 }
+
+#addRow-btn{
+    margin-top: 10px;
+}
